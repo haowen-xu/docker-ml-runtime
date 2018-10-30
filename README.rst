@@ -13,8 +13,6 @@ All the variants can be retrieved at `Docker Hub <https://hub.docker.com/r/haowe
 * Variants:
    * CPU variant: based on `haowenxu/base-runtime:cpu`
    * GPU variant: based on `haowenxu/base-runtime:gpu`
-* Installed packages:
-   * Spark 2.3.2: 
 
 Installation
 ------------
@@ -32,11 +30,8 @@ Then for example, you can use the following statement to generate the CPU
 variant Dockerfile::
 
     python configure.py \
-        --apache-mirror=https://mirrors.tuna.tsinghua.edu.cn/apache \
         -c config/cpu.yml \
-        -c config/spark2.3.yml
-
-Note that you may specify a proper Apache mirror site by `--apache-mirror`.
+        -c config/tensorflow1.11.yml
 
 Build the Docker Image
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -48,9 +43,6 @@ After generate the Dockerfile, you can build the docker image by::
 Usage
 -----
 
-Basic Usage
-~~~~~~~~~~~
-
 The basic usage of this docker image is shown as below.
 Note that you may specify the `TZ` environmental variable, such that the
 container will have the correct timezone::
@@ -60,10 +52,3 @@ container will have the correct timezone::
         -e TZ=Asia/Shanghai \
         haowenxu/ml-runtime:cpu \
         /bin/bash
-
-Spark Usage
-~~~~~~~~~~~
-
-The following environmental variables should be specified by `-e`::
-
-    MESOS_MASTER=<URI to the mesos master>
