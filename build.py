@@ -16,7 +16,10 @@ except ImportError:
 @click.command()
 @click.option('--pypi-mirror', type=str,
               default='https://pypi.tuna.tsinghua.edu.cn/simple')
+@click.option('--apache-mirror', type=str,
+              default='https://mirrors.tuna.tsinghua.edu.cn/apache')
 @click.option('--tensorflow', type=str, default='1.11', required=False)
+@click.option('--spark', type=str, default='2.3', required=False)
 @click.option('-r', '--repo', type=str, required=True,
               help='Repository of the docker image. '
                    '(e.g., "haowenxu/base-runtime")')
@@ -27,7 +30,8 @@ except ImportError:
 @click.option('--sudo', is_flag=True, required=False, default=False,
               help='Whether or not to use sudo to launch the docker CLI?')
 @click.argument('variant', required=True)
-def main(variant, pypi_mirror, tensorflow, repo, push, push_to, sudo):
+def main(variant, pypi_mirror, apache_mirror,
+         tensorflow, spark, repo, push, push_to, sudo):
     if variant not in ('cpu', 'gpu'):
         click.echo('Invalid variant {}'.format(variant), err=True)
         sys.exit(-1)
@@ -41,8 +45,8 @@ def main(variant, pypi_mirror, tensorflow, repo, push, push_to, sudo):
 
     tags = [
         variant,
-        '{variant}-tensorflow{tensorflow}'.format(
-            variant=variant, tensorflow=tensorflow)
+        '{variant}-tensorflow{tensorflow}-spark{spark}'.format(
+            variant=variant, tensorflow=tensorflow, spark=spark)
     ]
     image_names = ['{}:{}'.format(repo, tag) for tag in tags]
 
@@ -56,7 +60,8 @@ def main(variant, pypi_mirror, tensorflow, repo, push, push_to, sudo):
             sys.executable,
             'configure.py',
             '-c', 'config/{}.yml'.format(variant),
-            '-c', 'config/tensorflow{}.yml'.format(tensorflow)
+            '-c', 'config/tensorflow{}.yml'.format(tensorflow),
+            '-c', 'config/spark{}.yml'.format(spark)
         ]
         subprocess.check_call(args, cwd=work_dir)
         
@@ -65,6 +70,7 @@ def main(variant, pypi_mirror, tensorflow, repo, push, push_to, sudo):
             'build',
             '--build-arg', 'CACHEBUST={}'.format(time.time()),
             '--build-arg', 'PIP_OPTS=-i {}'.format(pypi_mirror),
+            '--build-arg', 'APACHE_MIRROR={}'.format(apache_mirror),
             '-t', image_names[-1]
         ]
         args.append('.')

@@ -2,9 +2,8 @@ FROM {{ config.base_image }}
 
 MAINTAINER Haowen Xu <haowen.xu@outlook.com>
 
-ARG PIP_OPTS=
-
 # Install Python libraries
+ARG PIP_OPTS=
 ARG PYTHON_LIBRARY_BUILD_VERSION=1
 ENV PIP_DEFAULT_TIMEOUT=120
 RUN python --version && \
@@ -49,6 +48,14 @@ RUN python -m pip install ${PIP_OPTS} \
         git+https://github.com/haowen-xu/mltoolkit.git \
         git+https://github.com/haowen-xu/mlstorage.git \
         git+https://github.com/facebookresearch/visdom.git
+
+# Install Spark libraries
+ARG APACHE_MIRROR=https://www.apache.org/dist
+ARG SPARK_LIBRARY_BUILD_VERSION=1
+RUN wget -O /tmp/spark-{{ config.spark_version }}-bin-hadoop{{ config.hadoop_version }}.tgz ${APACHE_MIRROR}/spark/spark-{{ config.spark_version }}/spark-{{ config.spark_version }}-bin-hadoop{{ config.hadoop_version }}.tgz && \
+    mkdir -p /opt && cd /opt && tar xvf /tmp/spark-{{ config.spark_version }}-bin-hadoop{{ config.hadoop_version }}.tgz && rm /tmp/spark-{{ config.spark_version }}-bin-hadoop{{ config.hadoop_version }}.tgz
+ENV SPARK_HOME="/opt/spark-{{ config.spark_version }}-bin-hadoop{{ config.hadoop_version }}"
+ENV PATH="${SPARK_HOME}/bin:${PATH}"
 
 # Install the entry script
 COPY entry.sh /
