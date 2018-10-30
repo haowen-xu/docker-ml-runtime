@@ -1,0 +1,12 @@
+/.git*
+/.ropeproject
+/.travis.yml
+/.gitlab-ci.yml
+/config
+/build.py
+/configure.py
+/Dockerfile.template
+/README.rst
+/requirements.txt
+*.pyc
+.DS_Store

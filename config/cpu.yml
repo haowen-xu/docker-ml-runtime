@@ -1,0 +1,2 @@
+base_image: haowenxu/base-runtime:cpu
+variant: cpu

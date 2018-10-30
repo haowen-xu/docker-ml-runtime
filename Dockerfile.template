@@ -1,0 +1,55 @@
+FROM {{ config.base_image }}
+
+MAINTAINER Haowen Xu <haowen.xu@outlook.com>
+
+ARG PIP_OPTS=
+
+# Install Python libraries
+ARG PYTHON_LIBRARY_BUILD_VERSION=1
+ENV PIP_DEFAULT_TIMEOUT=120
+RUN python --version && \
+    python -m pip --version && \
+    python -m pip install ${PIP_OPTS} --no-cache-dir --upgrade \
+        numpy==1.14.5 scipy sympy pandas tables scikit-learn matplotlib==2.0.2 ipython[all] tqdm \
+        seaborn pillow imageio PyYAML sqlalchemy pymongo jinja2 scikit-image scipy progressbar2 mock pep8 coverage \
+        mako GitPython tinydb tinydb-serialization hashfs && \
+    python -m pip install ${PIP_OPTS} --no-cache-dir torchvision && \
+    python -m pip install ${PIP_OPTS} --no-cache-dir tensorflow{% if config.variant == 'gpu' %}-gpu{% endif %}=={{ config.tensorflow_version }} && \
+    python -m pip install ${PIP_OPTS} --no-cache-dir rpy2 && \
+    rm -rf /root/.cache
+
+# Install R libraires
+ARG R_LIBRARY_BUILD_VERSION=1
+RUN R --version && \
+    echo "broom\n\
+        DBI\n\
+        dbplyr\n\
+        dplyr\n\
+        hexbin\n\
+        ggplot2\n\
+        lme4\n\
+        RSQLite\n\
+        tidyr" > /tmp/rpacks.txt && \
+    R -e 'install.packages(sub("(.+)\\\\n","\\1", scan("/tmp/rpacks.txt", "character")), repos="'"${CRAN_MIRROR}"'")' && \
+    rm /tmp/rpacks.txt
+
+# Install Jupyterlab and other Jupyter extensions
+ARG JUPYTER_BUILD_VERSION=1
+RUN pip install ${PIP_OPTS} jupyterlab jupyter_nbextensions_configurator jupyter_contrib_nbextensions && \
+    jupyter contrib nbextension install --sys-prefix && \
+    jupyter nbextensions_configurator enable --sys-prefix && \
+    jupyter serverextension enable --py jupyterlab --sys-prefix
+
+# Force invalidate the cache layer after this statement, such that
+# these frequently updated libraries will get re-installed every time.
+ARG CACHEBUST=1
+RUN python -m pip install ${PIP_OPTS} \
+        git+https://github.com/thu-ml/zhusuan.git \
+        git+https://github.com/haowen-xu/tfsnippet.git \
+        git+https://github.com/haowen-xu/mltoolkit.git \
+        git+https://github.com/haowen-xu/mlstorage.git \
+        git+https://github.com/facebookresearch/visdom.git
+
+# Install the entry script
+COPY entry.sh /
+ENTRYPOINT ["/entry.sh"]

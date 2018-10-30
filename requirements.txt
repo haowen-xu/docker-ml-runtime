@@ -1,0 +1,4 @@
+Jinja2 >= 2.10
+click >= 7.0
+PyYAML >= 3.13
+backports.tempfile >= 1.0 ; python_version < '3.2'
