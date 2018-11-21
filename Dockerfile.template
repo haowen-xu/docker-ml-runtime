@@ -34,24 +34,28 @@ RUN R --version && \
         RSQLite\n\
         tidyr" > /tmp/rpacks.txt && \
     R -e 'install.packages(sub("(.+)\\\\n","\\1", scan("/tmp/rpacks.txt", "character")), repos="'"${CRAN_MIRROR}"'")' && \
-    rm /tmp/rpacks.txt
+    rm /tmp/rpacks.txt && \
+    rm -rf /root/.cache
 
 # Install Jupyterlab and other Jupyter extensions
 ARG JUPYTER_BUILD_VERSION=1
-RUN pip install ${PIP_OPTS} jupyterlab jupyter_nbextensions_configurator jupyter_contrib_nbextensions && \
+RUN pip install ${PIP_OPTS} --no-cache-dir jupyterlab jupyter_nbextensions_configurator jupyter_contrib_nbextensions && \
     jupyter contrib nbextension install --sys-prefix && \
     jupyter nbextensions_configurator enable --sys-prefix && \
-    jupyter serverextension enable --py jupyterlab --sys-prefix
+    jupyter serverextension enable --py jupyterlab --sys-prefix && \
+    rm -rf /root/.cache
 
 # Force invalidate the cache layer after this statement, such that
 # these frequently updated libraries will get re-installed every time.
 ARG CACHEBUST=1
-RUN python -m pip install ${PIP_OPTS} \
+RUN python -m pip install ${PIP_OPTS} --no-cache-dir \
         git+https://github.com/thu-ml/zhusuan.git \
         git+https://github.com/haowen-xu/tfsnippet.git \
         git+https://github.com/haowen-xu/mltoolkit.git \
         git+https://github.com/haowen-xu/mlstorage.git \
-        git+https://github.com/facebookresearch/visdom.git
+        git+https://github.com/facebookresearch/visdom.git \
+    && \
+    rm -rf /root/.cache
 
 # Install Spark libraries
 ARG APACHE_MIRROR=https://www.apache.org/dist
