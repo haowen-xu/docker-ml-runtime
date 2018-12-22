@@ -31,7 +31,8 @@ variant Dockerfile::
 
     python configure.py \
         -c config/cpu.yml \
-        -c config/tensorflow1.11.yml
+        -c config/spark2.3.yml \
+        -c config/tensorflow1.12.yml
 
 Build the Docker Image
 ~~~~~~~~~~~~~~~~~~~~~~

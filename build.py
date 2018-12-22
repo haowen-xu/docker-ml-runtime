@@ -18,7 +18,7 @@ except ImportError:
               default='https://pypi.tuna.tsinghua.edu.cn/simple')
 @click.option('--apache-mirror', type=str,
               default='https://mirrors.tuna.tsinghua.edu.cn/apache')
-@click.option('--tensorflow', type=str, default='1.11', required=False)
+@click.option('--tensorflow', type=str, default='1.12', required=False)
 @click.option('--spark', type=str, default='2.3', required=False)
 @click.option('-r', '--repo', type=str, required=True,
               help='Repository of the docker image. '
@@ -54,7 +54,7 @@ def main(variant, pypi_mirror, apache_mirror,
         pwd = os.path.abspath(os.getcwd())
         work_dir = os.path.join(tmpdir, 'build')
         shutil.copytree(pwd, work_dir)
-        
+
         # configure the Dockerfile
         args = [
             sys.executable,
@@ -64,7 +64,7 @@ def main(variant, pypi_mirror, apache_mirror,
             '-c', 'config/spark{}.yml'.format(spark)
         ]
         subprocess.check_call(args, cwd=work_dir)
-        
+
         # build the docker
         args = [
             'build',
