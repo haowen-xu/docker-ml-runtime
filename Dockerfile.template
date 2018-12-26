@@ -45,18 +45,6 @@ RUN pip install ${PIP_OPTS} --no-cache-dir jupyterlab jupyter_nbextensions_confi
     jupyter serverextension enable --py jupyterlab --sys-prefix && \
     rm -rf /root/.cache
 
-# Force invalidate the cache layer after this statement, such that
-# these frequently updated libraries will get re-installed every time.
-ARG CACHEBUST=1
-RUN python -m pip install ${PIP_OPTS} --no-cache-dir \
-        git+https://github.com/thu-ml/zhusuan.git \
-        git+https://github.com/haowen-xu/tfsnippet.git \
-        git+https://github.com/haowen-xu/mlsnippet.git \
-        git+https://github.com/haowen-xu/mlstorage-client.git \
-        git+https://github.com/facebookresearch/visdom.git \
-    && \
-    rm -rf /root/.cache
-
 # Install Spark libraries
 ARG APACHE_MIRROR=https://www.apache.org/dist
 ARG SPARK_LIBRARY_BUILD_VERSION=1
@@ -64,6 +52,18 @@ RUN wget -O /tmp/spark-{{ config.spark_version }}-bin-hadoop{{ config.hadoop_ver
     mkdir -p /opt && cd /opt && tar xvf /tmp/spark-{{ config.spark_version }}-bin-hadoop{{ config.hadoop_version }}.tgz && rm /tmp/spark-{{ config.spark_version }}-bin-hadoop{{ config.hadoop_version }}.tgz
 ENV SPARK_HOME="/opt/spark-{{ config.spark_version }}-bin-hadoop{{ config.hadoop_version }}"
 ENV PATH="${SPARK_HOME}/bin:${PATH}"
+
+# Force invalidate the cache layer after this statement, such that
+# these frequently updated libraries will get re-installed every time.
+ARG CACHEBUST=1
+RUN python -m pip install ${PIP_OPTS} --upgrade --no-cache-dir \
+        git+https://github.com/thu-ml/zhusuan.git \
+        git+https://github.com/haowen-xu/tfsnippet.git@develop \
+        git+https://github.com/haowen-xu/mlsnippet.git \
+        git+https://github.com/haowen-xu/mlstorage-client.git \
+        git+https://github.com/facebookresearch/visdom.git \
+    && \
+    rm -rf /root/.cache
 
 # Install the entry script
 COPY entry.sh /
