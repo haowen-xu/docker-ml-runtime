@@ -38,8 +38,8 @@ RUN R --version && \
     rm -rf /root/.cache
 
 # Install Jupyterlab and other Jupyter extensions
-ARG JUPYTER_BUILD_VERSION=1
-RUN pip install ${PIP_OPTS} --no-cache-dir jupyterlab jupyter_nbextensions_configurator jupyter_contrib_nbextensions && \
+ARG JUPYTER_BUILD_VERSION=2
+RUN pip install ${PIP_OPTS} --no-cache-dir jupyterlab jupyter_nbextensions_configurator jupyter_contrib_nbextensions jupyter-tensorboard && \
     jupyter contrib nbextension install --sys-prefix && \
     jupyter nbextensions_configurator enable --sys-prefix && \
     jupyter serverextension enable --py jupyterlab --sys-prefix && \
