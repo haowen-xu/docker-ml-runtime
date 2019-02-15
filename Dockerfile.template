@@ -2,11 +2,21 @@ FROM {{ config.base_image }}
 
 MAINTAINER Haowen Xu <haowen.xu@outlook.com>
 
+# Install System dependencies
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y update && \
+    DEBIAN_FRONTEND=noninteractive apt-get -y dist-upgrade && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        openssh-client \
+    && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 # Install Python libraries
 ARG PIP_OPTS=
 ARG PYTHON_LIBRARY_BUILD_VERSION=1
 ENV PIP_DEFAULT_TIMEOUT=120
-RUN python --version && \
+RUN python -m pip install pip --upgrade && \
+    python --version && \
     python -m pip --version && \
     python -m pip install ${PIP_OPTS} --no-cache-dir --upgrade \
         numpy==1.14.5 scipy sympy pandas tables scikit-learn matplotlib==2.0.2 ipython[all] tqdm \
