@@ -19,7 +19,6 @@ except ImportError:
 @click.option('--apache-mirror', type=str,
               default='https://mirrors.tuna.tsinghua.edu.cn/apache')
 @click.option('--tensorflow', type=str, default='1.12', required=False)
-@click.option('--spark', type=str, default='2.3', required=False)
 @click.option('-r', '--repo', type=str, required=True,
               help='Repository of the docker image. '
                    '(e.g., "haowenxu/base-runtime")')
@@ -31,7 +30,7 @@ except ImportError:
               help='Whether or not to use sudo to launch the docker CLI?')
 @click.argument('variant', required=True)
 def main(variant, pypi_mirror, apache_mirror,
-         tensorflow, spark, repo, push, push_to, sudo):
+         tensorflow, repo, push, push_to, sudo):
     if variant not in ('cpu', 'gpu'):
         click.echo('Invalid variant {}'.format(variant), err=True)
         sys.exit(-1)
@@ -45,8 +44,8 @@ def main(variant, pypi_mirror, apache_mirror,
 
     tags = [
         variant,
-        '{variant}-tensorflow{tensorflow}-spark{spark}'.format(
-            variant=variant, tensorflow=tensorflow, spark=spark)
+        '{variant}-tensorflow{tensorflow}'.format(
+            variant=variant, tensorflow=tensorflow)
     ]
     image_names = ['{}:{}'.format(repo, tag) for tag in tags]
 
@@ -60,8 +59,7 @@ def main(variant, pypi_mirror, apache_mirror,
             sys.executable,
             'configure.py',
             '-c', 'config/{}.yml'.format(variant),
-            '-c', 'config/tensorflow{}.yml'.format(tensorflow),
-            '-c', 'config/spark{}.yml'.format(spark)
+            '-c', 'config/tensorflow{}.yml'.format(tensorflow)
         ]
         subprocess.check_call(args, cwd=work_dir)
 
