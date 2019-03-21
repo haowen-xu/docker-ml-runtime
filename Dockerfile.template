@@ -22,6 +22,7 @@ RUN python -m pip install pip --upgrade && \
         numpy==1.14.5 scipy sympy pandas tables scikit-learn matplotlib==2.0.2 ipython[all] tqdm \
         seaborn pillow imageio PyYAML sqlalchemy pymongo jinja2 scikit-image scipy progressbar2 mock pep8 coverage \
         mako Flask GitPython tinydb tinydb-serialization hashfs fs opencv-python lmdb gunicorn \
+        bokeh dask distributed joblib \
     && \
     python -m pip install ${PIP_OPTS} --no-cache-dir torchvision && \
     python -m pip install ${PIP_OPTS} --no-cache-dir \
