@@ -56,13 +56,13 @@ RUN pip install ${PIP_OPTS} --no-cache-dir jupyterlab jupyter_nbextensions_confi
     jupyter serverextension enable --py jupyterlab --sys-prefix && \
     rm -rf /root/.cache
 
-# Install Spark libraries
-ARG APACHE_MIRROR=https://www.apache.org/dist
-ARG SPARK_LIBRARY_BUILD_VERSION=1
-RUN wget -O /tmp/spark-{{ config.spark_version }}-bin-hadoop{{ config.hadoop_version }}.tgz ${APACHE_MIRROR}/spark/spark-{{ config.spark_version }}/spark-{{ config.spark_version }}-bin-hadoop{{ config.hadoop_version }}.tgz && \
-    mkdir -p /opt && cd /opt && tar xvf /tmp/spark-{{ config.spark_version }}-bin-hadoop{{ config.hadoop_version }}.tgz && rm /tmp/spark-{{ config.spark_version }}-bin-hadoop{{ config.hadoop_version }}.tgz
-ENV SPARK_HOME="/opt/spark-{{ config.spark_version }}-bin-hadoop{{ config.hadoop_version }}"
-ENV PATH="${SPARK_HOME}/bin:${PATH}"
+## Install Spark libraries
+#ARG APACHE_MIRROR=https://www.apache.org/dist
+#ARG SPARK_LIBRARY_BUILD_VERSION=1
+#RUN wget -O /tmp/spark-{{ config.spark_version }}-bin-hadoop{{ config.hadoop_version }}.tgz ${APACHE_MIRROR}/spark/spark-{{ config.spark_version }}/spark-{{ config.spark_version }}-bin-hadoop{{ config.hadoop_version }}.tgz && \
+#    mkdir -p /opt && cd /opt && tar xvf /tmp/spark-{{ config.spark_version }}-bin-hadoop{{ config.hadoop_version }}.tgz && rm /tmp/spark-{{ config.spark_version }}-bin-hadoop{{ config.hadoop_version }}.tgz
+#ENV SPARK_HOME="/opt/spark-{{ config.spark_version }}-bin-hadoop{{ config.hadoop_version }}"
+#ENV PATH="${SPARK_HOME}/bin:${PATH}"
 
 # Force invalidate the cache layer after this statement, such that
 # these frequently updated libraries will get re-installed every time.
