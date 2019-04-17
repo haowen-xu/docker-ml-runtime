@@ -18,7 +18,7 @@ except ImportError:
               default='https://pypi.tuna.tsinghua.edu.cn/simple')
 @click.option('--apache-mirror', type=str,
               default='https://mirrors.tuna.tsinghua.edu.cn/apache')
-@click.option('--tensorflow', type=str, default='1.12', required=False)
+@click.option('--tensorflow', type=str, default='1.13', required=False)
 @click.option('-r', '--repo', type=str, required=True,
               help='Repository of the docker image. '
                    '(e.g., "haowenxu/base-runtime")')

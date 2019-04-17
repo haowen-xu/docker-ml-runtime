@@ -6,7 +6,7 @@ MAINTAINER Haowen Xu <haowen.xu@outlook.com>
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y update && \
     DEBIAN_FRONTEND=noninteractive apt-get -y dist-upgrade && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-        openssh-client \
+        openssh-client psmisc \
     && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
