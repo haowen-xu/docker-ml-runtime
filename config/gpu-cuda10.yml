@@ -1,0 +1,2 @@
+base_image: haowenxu/base-runtime:gpu-cuda10
+variant: gpu

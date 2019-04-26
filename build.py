@@ -31,7 +31,7 @@ except ImportError:
 @click.argument('variant', required=True)
 def main(variant, pypi_mirror, apache_mirror,
          tensorflow, repo, push, push_to, sudo):
-    if variant not in ('cpu', 'gpu'):
+    if variant not in ('cpu', 'gpu-cuda10'):
         click.echo('Invalid variant {}'.format(variant), err=True)
         sys.exit(-1)
 
@@ -47,6 +47,8 @@ def main(variant, pypi_mirror, apache_mirror,
         '{variant}-tensorflow{tensorflow}'.format(
             variant=variant, tensorflow=tensorflow)
     ]
+    if '-' in variant:
+        tags.insert(0, variant.split('-')[0])
     image_names = ['{}:{}'.format(repo, tag) for tag in tags]
 
     with TemporaryDirectory() as tmpdir:

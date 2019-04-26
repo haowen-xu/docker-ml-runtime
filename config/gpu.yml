@@ -1,2 +1,0 @@
-base_image: haowenxu/base-runtime:gpu
-variant: gpu
