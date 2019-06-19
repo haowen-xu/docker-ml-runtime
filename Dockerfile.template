@@ -63,7 +63,7 @@ RUN python -m pip install ${PIP_OPTS} --upgrade --no-cache-dir \
         git+https://github.com/thu-ml/zhusuan.git \
         git+https://github.com/haowen-xu/tfsnippet.git@develop \
         git+https://github.com/haowen-xu/mlsnippet.git \
-        git+https://github.com/haowen-xu/mlstorage-client.git \
+        git+https://github.com/haowen-xu/ml-essentials.git \
         git+https://github.com/facebookresearch/visdom.git \
     && \
     rm -rf /root/.cache
