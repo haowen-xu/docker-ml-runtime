@@ -19,7 +19,7 @@ RUN python -m pip install pip --upgrade && \
     python --version && \
     python -m pip --version && \
     python -m pip install ${PIP_OPTS} --no-cache-dir --upgrade \
-        numpy==1.16.2 scipy sympy pandas tables scikit-learn matplotlib==2.0.2 ipython[all] tqdm \
+        numpy==1.16.4 scipy sympy pandas tables scikit-learn matplotlib ipython[all] tqdm \
         seaborn pillow imageio PyYAML sqlalchemy pymongo jinja2 scikit-image scipy progressbar2 mock pep8 coverage \
         mako Flask GitPython tinydb tinydb-serialization hashfs fs opencv-python lmdb gunicorn \
         bokeh dask distributed joblib \
