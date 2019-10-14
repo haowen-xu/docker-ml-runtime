@@ -22,6 +22,8 @@ except ImportError:
 @click.option('-r', '--repo', type=str, required=True,
               help='Repository of the docker image. '
                    '(e.g., "haowenxu/base-runtime")')
+@click.option('--detail-tag-only', is_flag=True, required=False, default=False,
+              help='Only set detailed tags.')
 @click.option('--push', is_flag=True, required=False, default=False,
               help='Push the image to DockerHub.')
 @click.option('--push-to', multiple=True, type=str, required=False,
@@ -30,7 +32,7 @@ except ImportError:
               help='Whether or not to use sudo to launch the docker CLI?')
 @click.argument('variant', required=True)
 def main(variant, pypi_mirror, apache_mirror,
-         tensorflow, repo, push, push_to, sudo):
+         tensorflow, repo, detail_tag_only, push, push_to, sudo):
     if variant not in ('cpu', 'gpu-cuda10'):
         click.echo('Invalid variant {}'.format(variant), err=True)
         sys.exit(-1)
@@ -42,13 +44,19 @@ def main(variant, pypi_mirror, apache_mirror,
         sys.stderr.flush()
         subprocess.check_call(args, **kwargs)
 
-    tags = [
-        variant,
-        '{variant}-tensorflow{tensorflow}'.format(
-            variant=variant, tensorflow=tensorflow)
-    ]
-    if '-' in variant:
-        tags.insert(0, variant.split('-')[0])
+    if detail_tag_only:
+        tags = [
+            '{variant}-tensorflow{tensorflow}'.format(
+                variant=variant, tensorflow=tensorflow)
+        ]
+    else:
+        tags = [
+            variant,
+            '{variant}-tensorflow{tensorflow}'.format(
+                variant=variant, tensorflow=tensorflow)
+        ]
+        if '-' in variant:
+            tags.insert(0, variant.split('-')[0])
     image_names = ['{}:{}'.format(repo, tag) for tag in tags]
 
     with TemporaryDirectory() as tmpdir:
